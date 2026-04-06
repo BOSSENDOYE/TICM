@@ -1,58 +1,74 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { HiOutlineShieldCheck, HiOutlineAcademicCap } from 'react-icons/hi2'
+import { HiOutlineShieldCheck } from 'react-icons/hi2'
+import { API_BASE } from '../../api'
 import './Certifications.css'
 
-const certifications = [
-  { code: 'ASME B31.3', name: 'Process Piping', category: 'Tuyauterie' },
-  { code: 'EN 13480', name: 'Tuyauteries métalliques industrielles', category: 'Tuyauterie' },
-  { code: 'NF EN ISO 3834', name: 'Exigences de qualité en soudage', category: 'Soudage' },
-  { code: 'EN 1090', name: 'Structures métalliques et aluminium', category: 'Charpente' },
-  { code: 'ISO 9001', name: 'Système de management de la qualité', category: 'Management' },
-  { code: 'ISO 45001', name: 'Santé & Sécurité au travail', category: 'HSE' },
+const fallback = [
+  { code: 'ASME B31.3',   title: 'Process Piping',                        category: 'Tuyauterie' },
+  { code: 'EN 13480',     title: 'Tuyauteries métalliques industrielles',  category: 'Tuyauterie' },
+  { code: 'ISO 3834',     title: 'Exigences qualité en soudage',           category: 'Soudage' },
+  { code: 'EN 1090',      title: 'Structures métalliques et aluminium',    category: 'Charpente' },
+  { code: 'ISO 9001',     title: 'Management de la qualité',               category: 'Management' },
+  { code: 'ISO 45001',    title: 'Santé & Sécurité au travail',            category: 'HSE' },
 ]
 
+const CAT_COLORS = {
+  Tuyauterie: '#3B82F6', Soudage: '#F59E0B', Charpente: '#10B981',
+  Management: '#8B5CF6', HSE: '#EF4444',
+}
+
 export default function Certifications() {
+  const [certs, setCerts] = useState(fallback)
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
 
-  return (
-    <section id="certifications" className="section certifications-section">
-      <div className="container">
-        <div className="section-header">
-          <motion.h2
-            className="section-title"
-            initial={{ opacity: 0, y: 30 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            Normes & Qualité
-          </motion.h2>
-          <motion.p
-            className="section-subtitle"
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.15 }}
-          >
-            Notre engagement qualité repose sur les normes internationales les plus exigeantes.
-          </motion.p>
-        </div>
+  useEffect(() => {
+    fetch(`${API_BASE}/api/certifications`, { headers: { Accept: 'application/json' } })
+      .then(r => r.json())
+      .then(d => { const l = d?.data || d || []; if (Array.isArray(l) && l.length) setCerts(l) })
+      .catch(() => {})
+  }, [])
 
-        <div ref={ref} className="certifications-grid">
-          {certifications.map((cert, i) => (
+  return (
+    <section id="certifications" className="certifications-section section-dark">
+      <div className="certifications-bg" aria-hidden />
+      <div className="container">
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 28 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+        >
+          <div className="eyebrow">Normes & Certifications</div>
+          <h2 className="section-title section-title-dark">Notre engagement qualité</h2>
+          <div className="title-accent" />
+          <p className="section-subtitle section-subtitle-dark">
+            Maîtrise des normes internationales les plus exigeantes, gage de qualité sur chaque projet.
+          </p>
+        </motion.div>
+
+        <div ref={ref} className="certs-grid">
+          {certs.map((cert, i) => (
             <motion.div
-              key={cert.code}
-              className="cert-badge"
-              initial={{ opacity: 0, scale: 0.9 }}
+              key={cert.id || cert.code}
+              className="cert-card"
+              initial={{ opacity: 0, scale: 0.92 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.5, delay: 0.1 + i * 0.1 }}
+              transition={{ duration: 0.5, delay: 0.05 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
             >
+              <div className="cert-card-glow" style={{ '--cat-color': CAT_COLORS[cert.category] || '#C9A84C' }} />
               <div className="cert-icon-wrap">
-                <HiOutlineShieldCheck className="cert-icon" />
+                <HiOutlineShieldCheck className="cert-shield" />
               </div>
               <div className="cert-info">
                 <span className="cert-code">{cert.code}</span>
-                <span className="cert-name">{cert.name}</span>
-                <span className="cert-category">{cert.category}</span>
+                <span className="cert-name">{cert.title}</span>
+                {cert.category && (
+                  <span className="cert-cat" style={{ color: CAT_COLORS[cert.category] || 'var(--gold)' }}>
+                    {cert.category}
+                  </span>
+                )}
               </div>
             </motion.div>
           ))}

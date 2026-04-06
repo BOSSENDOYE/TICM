@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//e/CODING/DSTCOMPUTING/Plateforme/SITE_TICM/TICM/**)",
+      "Bash(php artisan:*)",
+      "Bash(cmd /c \"cd /d e:\\\\CODING\\\\DSTCOMPUTING\\\\Plateforme\\\\SITE_TICM\\\\backend && php artisan make:migration create_realizations_table 2>&1\")",
+      "Bash(cmd /c copy \"e:\\\\CODING\\\\DSTCOMPUTING\\\\Plateforme\\\\SITE_TICM\\\\TICM\\\\Logo.png\" \"e:\\\\CODING\\\\DSTCOMPUTING\\\\Plateforme\\\\SITE_TICM\\\\TICM\\\\ticm-website\\\\src\\\\assets\\\\logo.png\")",
+      "Bash(powershell -Command \"Get-ChildItem 'e:\\\\\\\\CODING\\\\\\\\DSTCOMPUTING\\\\\\\\Plateforme\\\\\\\\SITE_TICM\\\\\\\\' | Select-Object Name, FullName\")",
+      "Bash(powershell -Command \"Copy-Item 'e:\\\\\\\\CODING\\\\\\\\DSTCOMPUTING\\\\\\\\Plateforme\\\\\\\\SITE_TICM\\\\\\\\TICM\\\\\\\\ticm-website\\\\\\\\Logo.png' 'e:\\\\\\\\CODING\\\\\\\\DSTCOMPUTING\\\\\\\\Plateforme\\\\\\\\SITE_TICM\\\\\\\\TICM\\\\\\\\ticm-website\\\\\\\\src\\\\\\\\assets\\\\\\\\logo.png' -Force; ls 'e:\\\\\\\\CODING\\\\\\\\DSTCOMPUTING\\\\\\\\Plateforme\\\\\\\\SITE_TICM\\\\\\\\TICM\\\\\\\\ticm-website\\\\\\\\src\\\\\\\\assets\\\\\\\\'\")",
+      "Bash(npm run:*)"
+    ]
+  }
+}

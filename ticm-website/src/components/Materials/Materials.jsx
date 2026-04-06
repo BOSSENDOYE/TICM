@@ -1,60 +1,71 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { API_BASE } from '../../api'
 import './Materials.css'
 
-const materials = [
-  { name: 'Acier noir', sigle: '—', application: 'Haute pression, charpentes, réservoirs', color: '#555' },
-  { name: 'Inox', sigle: '304/316L', application: 'Agroalimentaire, chimique, pharma', color: '#C0C0C0' },
-  { name: 'PEHD', sigle: 'PE100', application: 'Eau, assainissement, gaz BP', color: '#1a1a1a' },
-  { name: 'PVC', sigle: '—', application: 'Drainage, ventilation', color: '#8B7355' },
-  { name: 'PPH', sigle: 'PP-H', application: 'Eau chaude, produits chimiques', color: '#D4840A' },
-  { name: 'PRV', sigle: 'GRP', application: 'Effluents, eau potable, milieux marins', color: '#2F4F4F' },
+const SWATCHES = ['#5A6475','#B8B8BE','#1E1E1E','#8A7A64','#C87A12','#2E4E4E']
+
+const fallback = [
+  { name: 'Acier noir',  description: 'Haute pression, charpentes, réservoirs' },
+  { name: 'Inox 316L',   description: 'Agroalimentaire, chimique, pharma' },
+  { name: 'PEHD PE100',  description: 'Eau, assainissement, gaz basse pression' },
+  { name: 'PVC',         description: 'Drainage, ventilation industrielle' },
+  { name: 'PPH',         description: 'Eau chaude, produits chimiques' },
+  { name: 'PRV / GRP',   description: 'Effluents, eau potable, milieux marins' },
 ]
 
 export default function Materials() {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
+  const [materials, setMaterials] = useState(fallback)
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.08 })
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/materials`, { headers: { Accept: 'application/json' } })
+      .then(r => r.json())
+      .then(d => { const l = d?.data || d || []; if (Array.isArray(l) && l.length) setMaterials(l) })
+      .catch(() => {})
+  }, [])
 
   return (
-    <section id="materials" className="section materials-section">
-      <div className="materials-grain" />
+    <section id="materials" className="materials-section section-anthracite">
+      <div className="materials-noise" aria-hidden />
       <div className="container">
-        <div className="section-header">
-          <motion.h2
-            className="section-title"
-            initial={{ opacity: 0, y: 30 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            Matériaux Maîtrisés
-          </motion.h2>
-          <motion.p
-            className="section-subtitle"
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.15 }}
-          >
-            Une expertise étendue sur l'ensemble des matériaux utilisés dans l'industrie.
-          </motion.p>
-        </div>
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 28 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+        >
+          <div className="eyebrow">Matériaux maîtrisés</div>
+          <h2 className="section-title section-title-dark">Expertise matériaux</h2>
+          <div className="title-accent" />
+          <p className="section-subtitle section-subtitle-dark">
+            Une maîtrise étendue de l'ensemble des matériaux industriels, du métal aux polymères.
+          </p>
+        </motion.div>
 
         <div ref={ref} className="materials-grid">
           {materials.map((mat, i) => (
             <motion.div
-              key={mat.name}
-              className="material-card"
-              initial={{ opacity: 0, y: 40 }}
+              key={mat.id || mat.name}
+              className="mat-card"
+              initial={{ opacity: 0, y: 36 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.15 + i * 0.1 }}
+              transition={{ duration: 0.6, delay: 0.08 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="material-swatch" style={{ background: mat.color }}>
-                <div className="swatch-shine" />
-              </div>
-              <div className="material-info">
-                <div className="material-header">
-                  <h3 className="material-name">{mat.name}</h3>
-                  <span className="material-sigle">{mat.sigle}</span>
+              {mat.image ? (
+                <div className="mat-visual mat-visual--img">
+                  <img src={mat.image} alt={mat.name} loading="lazy" />
                 </div>
-                <p className="material-app">{mat.application}</p>
+              ) : (
+                <div className="mat-visual" style={{ background: `linear-gradient(135deg, ${SWATCHES[i % SWATCHES.length]}, ${SWATCHES[(i + 1) % SWATCHES.length]})` }}>
+                  <div className="mat-shine" />
+                  <span className="mat-initial">{mat.name.charAt(0)}</span>
+                </div>
+              )}
+              <div className="mat-info">
+                <h3 className="mat-name">{mat.name}</h3>
+                <p className="mat-desc">{mat.description}</p>
               </div>
             </motion.div>
           ))}

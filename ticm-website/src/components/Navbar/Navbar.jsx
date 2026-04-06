@@ -1,131 +1,159 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HiOutlineMenuAlt3, HiX } from 'react-icons/hi'
+import { HiX } from 'react-icons/hi'
+import { HiArrowUpRight, HiOutlinePhone } from 'react-icons/hi2'
+import logoImg from '../../assets/logo.png'
 import './Navbar.css'
 
 const navLinks = [
-  { label: 'Accueil', href: '#hero' },
-  { label: 'À Propos', href: '#about' },
-  { label: 'Expertise', href: '#expertise' },
-  { label: 'Matériaux', href: '#materials' },
-  { label: 'Références', href: '#references' },
+  { label: 'Accueil',        href: '#hero' },
+  { label: 'À Propos',       href: '#about' },
+  { label: 'Expertises',     href: '#expertise' },
+  { label: 'Réalisations',   href: '#realisations' },
+  { label: 'Références',     href: '#references' },
   { label: 'Certifications', href: '#certifications' },
-  { label: 'Engagements', href: '#commitments' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Contact',        href: '#contact' },
 ]
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState('hero')
+  const [scrolled,       setScrolled]       = useState(false)
+  const [mobileOpen,     setMobileOpen]     = useState(false)
+  const [activeSection,  setActiveSection]  = useState('hero')
+  const [indicator,      setIndicator]      = useState({ left: 0, width: 0, opacity: 0 })
+  const linksRef = useRef(null)
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 60)
-
+      setScrolled(window.scrollY > 50)
       const sections = navLinks.map(l => l.href.replace('#', ''))
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i])
-        if (el && el.getBoundingClientRect().top <= 150) {
+        if (el && el.getBoundingClientRect().top <= 160) {
           setActiveSection(sections[i])
           break
         }
       }
     }
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const handleNavClick = (e, href) => {
+  useEffect(() => {
+    if (!linksRef.current) return
+    const el = linksRef.current.querySelector(`[data-sec="${activeSection}"]`)
+    if (el) setIndicator({ left: el.offsetLeft, width: el.offsetWidth, opacity: 1 })
+  }, [activeSection])
+
+  const nav = (e, href) => {
     e.preventDefault()
     setMobileOpen(false)
-    const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
-    <motion.nav
-      className={`navbar ${scrolled ? 'scrolled' : ''}`}
-      initial={{ y: -80 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-    >
-      <div className="navbar-inner">
-        <a href="#hero" className="navbar-logo" onClick={(e) => handleNavClick(e, '#hero')}>
-          <div className="logo-icon">
-            <svg viewBox="0 0 40 40" fill="none">
-              <rect x="2" y="2" width="36" height="36" rx="2" stroke="var(--accent-primary)" strokeWidth="2" />
-              <path d="M10 28V12h6c4 0 6 2 6 5s-2 5-6 5h-3v6h-3zm3-9h3c2 0 3-1 3-2.5S18 14 16 14h-3v5z" fill="var(--accent-primary)" />
-              <line x1="26" y1="12" x2="26" y2="28" stroke="var(--accent-primary)" strokeWidth="2.5" />
-              <line x1="22" y1="28" x2="30" y2="28" stroke="var(--accent-primary)" strokeWidth="2.5" />
-              <line x1="22" y1="12" x2="30" y2="12" stroke="var(--accent-primary)" strokeWidth="2.5" />
-            </svg>
-          </div>
-          <div className="logo-text">
-            <span className="logo-name">TICM</span>
-            <span className="logo-tagline">Construction Métallique</span>
-          </div>
-        </a>
+    <>
+      <motion.nav
+        className={`navbar ${scrolled ? 'scrolled' : ''}`}
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="navbar-inner">
+          {/* Logo */}
+          <a href="#hero" className="navbar-logo" onClick={e => nav(e, '#hero')}>
+            <img src={logoImg} alt="TICM" className="logo-img" />
+            <div className="logo-text">
+              <span className="logo-name">TICM</span>
+              <span className="logo-sub">Construction Métallique</span>
+            </div>
+          </a>
 
-        <div className="navbar-links">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className={`nav-link ${activeSection === link.href.replace('#', '') ? 'active' : ''}`}
-              onClick={(e) => handleNavClick(e, link.href)}
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-
-        <a
-          href="#contact"
-          className="navbar-cta"
-          onClick={(e) => handleNavClick(e, '#contact')}
-        >
-          Nous Contacter
-        </a>
-
-        <button
-          className="navbar-toggle"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Menu"
-        >
-          {mobileOpen ? <HiX size={24} /> : <HiOutlineMenuAlt3 size={24} />}
-        </button>
-      </div>
-
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            className="mobile-menu"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {navLinks.map((link) => (
+          {/* Desktop links */}
+          <nav className="navbar-links" ref={linksRef}>
+            <motion.span
+              className="nav-pill-indicator"
+              animate={indicator}
+              transition={{ type: 'spring', stiffness: 500, damping: 42 }}
+            />
+            {navLinks.map(link => (
               <a
                 key={link.href}
                 href={link.href}
-                className={`mobile-link ${activeSection === link.href.replace('#', '') ? 'active' : ''}`}
-                onClick={(e) => handleNavClick(e, link.href)}
+                data-sec={link.href.replace('#', '')}
+                className={`nav-link ${activeSection === link.href.replace('#', '') ? 'active' : ''}`}
+                onClick={e => nav(e, link.href)}
               >
                 {link.label}
               </a>
             ))}
-            <a
-              href="#contact"
-              className="mobile-cta"
-              onClick={(e) => handleNavClick(e, '#contact')}
-            >
-              Nous Contacter
-            </a>
+          </nav>
+
+          {/* CTA */}
+          <a href="#contact" className="navbar-cta" onClick={e => nav(e, '#contact')}>
+            <HiOutlinePhone className="cta-phone" />
+            <span>Devis Gratuit</span>
+            <HiArrowUpRight className="cta-arrow" />
+          </a>
+
+          {/* Burger */}
+          <button className={`navbar-burger ${mobileOpen ? 'open' : ''}`} onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">
+            <span/><span/><span/>
+          </button>
+        </div>
+      </motion.nav>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            className="mobile-menu"
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="mobile-inner">
+              <div className="mobile-top">
+                <div className="mobile-logo">
+                  <img src={logoImg} alt="TICM" className="logo-img" style={{ height: 36, width: 'auto' }} />
+                  <span>TICM</span>
+                </div>
+                <button className="mobile-close" onClick={() => setMobileOpen(false)}><HiX size={20}/></button>
+              </div>
+
+              <div className="mobile-nav">
+                {navLinks.map((link, i) => (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    className={`mobile-link ${activeSection === link.href.replace('#', '') ? 'active' : ''}`}
+                    onClick={e => nav(e, link.href)}
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.08 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <span className="mobile-num">0{i + 1}</span>
+                    <span className="mobile-label">{link.label}</span>
+                    <HiArrowUpRight className="mobile-arrow" />
+                  </motion.a>
+                ))}
+              </div>
+
+              <motion.div
+                className="mobile-bottom"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55 }}
+              >
+                <a href="#contact" className="mobile-cta-btn" onClick={e => nav(e, '#contact')}>
+                  Demander un devis <HiArrowUpRight />
+                </a>
+                <p className="mobile-tagline">Tuyauterie · Chaudronnerie · Charpente</p>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </>
   )
 }
