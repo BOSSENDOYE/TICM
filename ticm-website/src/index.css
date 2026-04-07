@@ -93,6 +93,9 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 auto;
   padding: 0 32px;
 }
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+}
 
 /* ── Section header ── */
 .section-header { margin-bottom: 52px; }

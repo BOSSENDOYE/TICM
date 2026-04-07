@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Autoplay, Navigation, EffectCards } from 'swiper/modules'
+import { Autoplay, Navigation } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import {
@@ -117,6 +117,8 @@ function RefCard({ item, index, inView }) {
 export default function References() {
   const [refs, setRefs] = useState(fallback)
   const [ref, inView]   = useInView({ triggerOnce: true, threshold: 0.08 })
+  const prevRef = useRef(null)
+  const nextRef = useRef(null)
 
   useEffect(() => {
     fetch(`${API_BASE}/api/references`, { headers: { Accept: 'application/json' } })
@@ -153,10 +155,10 @@ export default function References() {
               <span className="ref-counter-lbl">références</span>
             </div>
             <div className="ref-nav-btns">
-              <button className="ref-nav-btn ref-prev" aria-label="Précédent">
+              <button ref={prevRef} className="ref-nav-btn ref-prev" aria-label="Précédent">
                 <HiArrowLeft />
               </button>
-              <button className="ref-nav-btn ref-next" aria-label="Suivant">
+              <button ref={nextRef} className="ref-nav-btn ref-next" aria-label="Suivant">
                 <HiArrowRight />
               </button>
             </div>
@@ -171,7 +173,11 @@ export default function References() {
             slidesPerView={1}
             loop
             autoplay={{ delay: 3800, disableOnInteraction: false, pauseOnMouseEnter: true }}
-            navigation={{ prevEl: '.ref-prev', nextEl: '.ref-next' }}
+            navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+            onBeforeInit={(swiper) => {
+              swiper.params.navigation.prevEl = prevRef.current
+              swiper.params.navigation.nextEl = nextRef.current
+            }}
             breakpoints={{
               520:  { slidesPerView: 2 },
               820:  { slidesPerView: 3 },

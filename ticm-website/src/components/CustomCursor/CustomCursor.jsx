@@ -5,6 +5,8 @@ export default function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isClicking, setIsClicking] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const isTouch = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
+  if (isTouch) return null
 
   useEffect(() => {
     const move = (e) => {

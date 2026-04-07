@@ -263,12 +263,26 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.3 }}
           >
-            <span className="clients-label">Ils nous font confiance</span>
+            <div className="clients-header">
+              <span className="clients-divider" />
+              <span className="clients-label">Ils nous font confiance</span>
+              <span className="clients-divider" />
+            </div>
             <div className="clients-row">
-              {clientLogos.map(c => (
-                <div key={c.name} className="client-item" title={c.name}>
-                  <img src={c.logo} alt={c.name} />
-                </div>
+              {clientLogos.map((c, i) => (
+                <motion.div
+                  key={c.name}
+                  className="client-logo-card"
+                  title={c.name}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 1.45 + i * 0.08 }}
+                >
+                  <div className="client-logo-img-wrap">
+                    <img src={c.logo} alt={c.name} />
+                  </div>
+                  <span className="client-logo-name">{c.name}</span>
+                </motion.div>
               ))}
             </div>
           </motion.div>
