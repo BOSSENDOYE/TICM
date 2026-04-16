@@ -221,17 +221,61 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--r-full);
 }
 
-/* ── Custom scrollbar ── */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--dark-900); }
-::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--gold); }
-::selection { background: var(--gold); color: var(--dark-900); }
-
-/* Mobile scrollbar - same as desktop */
-@media (max-width: 768px) {
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: var(--dark-900); }
-  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+/* ══════════════════════════════════════
+    SCROLLBAR STYLES
+    ══════════════════════════════ */
+html, body {
+  scrollbar-gutter: stable both-edges;
 }
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+::-webkit-scrollbar-track {
+  background: #080E16 !important;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: #C9A84C !important;
+  border-radius: 3px !important;
+  border: 1px solid #A07832 !important;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #DFC070 !important;
+}
+::-webkit-scrollbar-corner {
+  background: #080E16 !important;
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+  html, body, * {
+    scrollbar-gutter: stable both-edges;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-color: #C9A84C #080E16;
+    scrollbar-width: thin;
+  }
+  *::-webkit-scrollbar {
+    width: 4px !important;
+    height: 4px !important;
+    background: transparent !important;
+  }
+  *::-webkit-scrollbar-track {
+    background: #080E16 !important;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: #C9A84C !important;
+    border-radius: 3px !important;
+    border: 1px solid #A07832 !important;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: #DFC070 !important;
+  }
+  *::-webkit-scrollbar-corner {
+    background: #080E16 !important;
+  }
+  div, section, main, aside, nav, ul, ol, body, html, textarea {
+    scrollbar-color: #C9A84C #080E16 !important;
+    scrollbar-width: thin !important;
+  }
+}
+::selection { background: #C9A84C; color: #080E16; }
