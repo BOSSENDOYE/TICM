@@ -227,3 +227,11 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 ::selection { background: var(--gold); color: var(--dark-900); }
+
+/* Mobile scrollbar - same as desktop */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--dark-900); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+}
