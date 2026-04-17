@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import logoImg from '../../assets/logo.png'
+import logoImg from '../../assets/logofaw.png'
 import {
   HiOutlineHome, HiOutlineEnvelope, HiOutlineCog6Tooth,
   HiOutlineBriefcase, HiOutlineAcademicCap, HiOutlineCheckBadge,

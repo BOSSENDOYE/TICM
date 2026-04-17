@@ -3,7 +3,7 @@ import { adminApi } from '../adminApi'
 import { HiOutlineTrash, HiOutlinePencil, HiOutlineMagnifyingGlass, HiOutlinePlus, HiOutlineCube, HiOutlinePhoto } from 'react-icons/hi2'
 import { HiX } from 'react-icons/hi'
 
-const EMPTY = { name: '', description: '', image: '', url: '' }
+const EMPTY = { name: '', description: '', image: '', url: '', imageFile: null }
 
 export default function MaterialsSection() {
   const [items, setItems]     = useState([])
@@ -14,6 +14,7 @@ export default function MaterialsSection() {
   const [form, setForm]       = useState(EMPTY)
   const [saving, setSaving]   = useState(false)
   const [toast, setToast]     = useState(null)
+  const [preview, setPreview] = useState(null)
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type })
@@ -29,21 +30,40 @@ export default function MaterialsSection() {
   }
   useEffect(load, [])
 
-  const openNew  = () => { setEditing(null); setForm(EMPTY); setModal('form') }
-  const openEdit = (item) => { setEditing(item); setForm({ ...item }); setModal('form') }
+  const openNew  = () => { setEditing(null); setForm(EMPTY); setPreview(null); setModal('form') }
+  const openEdit = (item) => { setEditing(item); setForm({ ...item, imageFile: null }); setPreview(item.image); setModal('form') }
 
   const f = (k, v) => setForm(p => ({ ...p, [k]: v }))
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setForm(p => ({ ...p, imageFile: file, image: '' }))
+      setPreview(URL.createObjectURL(file))
+    }
+  }
+
+  const removeImage = () => {
+    setForm(p => ({ ...p, imageFile: null, image: '' }))
+    setPreview(null)
+  }
 
   const save = async () => {
     if (!form.name.trim()) return showToast('Le nom est requis', 'error')
     setSaving(true)
     try {
+      const fd = new FormData()
+      fd.append('name', form.name)
+      if (form.description) fd.append('description', form.description)
+      if (form.url) fd.append('url', form.url)
+      if (form.imageFile) fd.append('image', form.imageFile)
+
       if (editing) {
-        await adminApi.put(`/api/materials/${editing.id}`, form)
-        setItems(prev => prev.map(i => i.id === editing.id ? { ...i, ...form } : i))
+        await adminApi.putForm(`/api/materials/${editing.id}`, fd)
+        setItems(prev => prev.map(i => i.id === editing.id ? { ...i, ...form, image: preview || form.image } : i))
         showToast('Matériau mis à jour')
       } else {
-        const res = await adminApi.post('/api/materials', form)
+        const res = await adminApi.postForm('/api/materials', fd)
         setItems(prev => [...prev, res?.data || res])
         showToast('Matériau créé')
       }
@@ -129,10 +149,13 @@ export default function MaterialsSection() {
                 <textarea className="form-input form-textarea" rows={3} value={form.description} onChange={e => f('description', e.target.value)} placeholder="Caractéristiques, usages…" />
               </div>
               <div className="form-group">
-                <label className="form-label">URL Image</label>
-                <input className="form-input" value={form.image} onChange={e => f('image', e.target.value)} placeholder="https://…" />
-                {form.image && (
-                  <img src={form.image} alt="" style={{ width: '100%', maxHeight: 120, objectFit: 'cover', borderRadius: 8, marginTop: 8 }} />
+                <label className="form-label">Image</label>
+                <input type="file" className="form-input" accept="image/*" onChange={handleImageChange} />
+                {(preview || form.image) && (
+                  <div style={{ position: 'relative', marginTop: 8 }}>
+                    <img src={preview || form.image} alt="" style={{ width: '100%', maxHeight: 120, objectFit: 'cover', borderRadius: 8 }} />
+                    <button type="button" onClick={removeImage} style={{ position: 'absolute', top: 4, right: 4, background: 'var(--a-red)', color: 'white', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer' }}>×</button>
+                  </div>
                 )}
               </div>
               <div className="form-group">

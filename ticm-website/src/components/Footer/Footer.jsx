@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { HiArrowUp, HiEnvelope, HiPhone, HiMapPin } from 'react-icons/hi2'
-import logoImg from '../../assets/logo.png'
+import logoImg from '../../assets/logofaw.png'
 import './Footer.css'
 
 const nav = [

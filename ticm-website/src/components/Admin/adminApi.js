@@ -40,4 +40,38 @@ export const adminApi = {
   patch:      (url, body) => req(url, { method: 'PATCH',  body: JSON.stringify(body) }),
   delete:     (url)       => req(url, { method: 'DELETE' }),
   uploadFile: (file)      => uploadFile(file),
+  postForm:   (url, formData) => {
+    const token = localStorage.getItem('auth_token')
+    return fetch(`${API_BASE}${url}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    }).then(res => {
+      if (res.status === 204) return null
+      return res.json().catch(() => ({}))
+    }).then(data => {
+      if (!res.ok) throw new Error(data?.message || `Erreur ${res.status}`)
+      return data
+    })
+  },
+  putForm:    (url, formData) => {
+    const token = localStorage.getItem('auth_token')
+    return fetch(`${API_BASE}${url}`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    }).then(res => {
+      if (res.status === 204) return null
+      return res.json().catch(() => ({}))
+    }).then(data => {
+      if (!res.ok) throw new Error(data?.message || `Erreur ${res.status}`)
+      return data
+    })
+  },
 }

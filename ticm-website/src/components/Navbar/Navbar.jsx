@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiX } from 'react-icons/hi'
 import { HiArrowUpRight, HiOutlinePhone } from 'react-icons/hi2'
-import logoImg from '../../assets/logo.png'
+import logoImg from '../../assets/logofaw.png'
 import './Navbar.css'
 
 const navLinks = [
