@@ -38,7 +38,7 @@ export default function ServicesSection() {
   useEffect(load, [])
 
   const openNew  = () => { setEditing(null); setForm(EMPTY); setModal('form') }
-  const openEdit = (item) => { setEditing(item); setForm({ ...item }); setModal('form') }
+  const openEdit = (item) => { setEditing(item); setForm({ ...item, summary: item.summary ?? '', content: item.content ?? '', icon: item.icon ?? '' }); setModal('form') }
   const openView = (item) => { setEditing(item); setModal('view') }
 
   const handleField = (k, v) => {

@@ -30,7 +30,7 @@ export default function CommitmentsSection() {
   useEffect(load, [])
 
   const openNew  = () => { setEditing(null); setForm(EMPTY); setModal('form') }
-  const openEdit = (item) => { setEditing(item); setForm({ ...item }); setModal('form') }
+  const openEdit = (item) => { setEditing(item); setForm({ ...item, description: item.description ?? '', icon: item.icon ?? '' }); setModal('form') }
 
   const f = (k, v) => setForm(p => ({ ...p, [k]: v }))
 

@@ -48,7 +48,7 @@ export default function RealisationsSection() {
   useEffect(load, [])
 
   const openNew  = () => { setEditing(null); setForm(EMPTY); setModal('form') }
-  const openEdit = (item) => { setEditing(item); setForm({ ...item }); setModal('form') }
+  const openEdit = (item) => { setEditing(item); setForm({ ...item, description: item.description ?? '', comments: item.comments ?? '', client: item.client ?? '', location: item.location ?? '', period: item.period ?? '', category: item.category ?? '', cover_image: item.cover_image ?? '' }); setModal('form') }
   const openView = (item) => { setEditing(item); setModal('view') }
   const openImgs = (item) => { setEditing(item); setNewImgCaption(''); setModal('images') }
 

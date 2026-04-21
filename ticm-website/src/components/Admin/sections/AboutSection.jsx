@@ -32,7 +32,21 @@ export default function AboutSection() {
     adminApi.get('/api/about')
       .then(d => {
         const data = d?.data || d || {}
-        setForm(prev => ({ ...prev, ...data }))
+        setForm(prev => ({
+          ...prev,
+          company_name:    data.company_name    ?? '',
+          tagline:         data.tagline         ?? '',
+          description:     data.description     ?? '',
+          mission:         data.mission         ?? '',
+          vision:          data.vision          ?? '',
+          founded_year:    data.founded_year    ?? '',
+          employees_count: data.employees_count ?? '',
+          address:         data.address         ?? '',
+          phone:           data.phone           ?? '',
+          email:           data.email           ?? '',
+          website:         data.website         ?? '',
+          linkedin:        data.linkedin        ?? '',
+        }))
       })
       .catch(() => {})
       .finally(() => setLoading(false))

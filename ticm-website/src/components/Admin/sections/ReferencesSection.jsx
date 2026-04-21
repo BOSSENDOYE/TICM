@@ -35,7 +35,7 @@ export default function ReferencesSection() {
   useEffect(load, [])
 
   const openNew  = () => { setEditing(null); setForm(EMPTY); setModal('form') }
-  const openEdit = (item) => { setEditing(item); setForm({ ...item }); setModal('form') }
+  const openEdit = (item) => { setEditing(item); setForm({ ...item, description: item.description ?? '', result: item.result ?? '', location: item.location ?? '', period: item.period ?? '', category: item.category ?? '', tag: item.tag ?? '', image: item.image ?? '' }); setModal('form') }
   const openView = (item) => { setEditing(item); setModal('view') }
 
   const f = (k, v) => setForm(p => ({ ...p, [k]: v }))

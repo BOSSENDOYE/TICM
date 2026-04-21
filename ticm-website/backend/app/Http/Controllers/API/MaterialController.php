@@ -38,17 +38,23 @@ class MaterialController extends Controller
     public function update(Request $request, Material $material)
     {
         $v = $request->validate([
-            'name'        => 'required|string|max:190',
+            'name'        => 'sometimes|string|max:190',
             'description' => 'nullable|string',
             'image'       => 'nullable|file|max:10240|mimes:jpg,jpeg,png,gif,webp',
             'url'         => 'nullable|string|max:255',
         ]);
 
-        $data = [
-            'name' => $v['name'],
-            'description' => $v['description'] ?? null,
-            'url' => $v['url'] ?? null,
-        ];
+        $data = [];
+
+        if (isset($v['name'])) {
+            $data['name'] = $v['name'];
+        }
+        if (isset($v['description'])) {
+            $data['description'] = $v['description'];
+        }
+        if (isset($v['url'])) {
+            $data['url'] = $v['url'];
+        }
 
         if ($request->hasFile('image')) {
             if ($material->image) {

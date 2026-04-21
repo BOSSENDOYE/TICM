@@ -35,7 +35,7 @@ export default function CertificationsSection() {
   useEffect(load, [])
 
   const openNew  = () => { setEditing(null); setForm(EMPTY); setModal('form') }
-  const openEdit = (item) => { setEditing(item); setForm({ ...item }); setModal('form') }
+  const openEdit = (item) => { setEditing(item); setForm({ ...item, code: item.code ?? '', category: item.category ?? '', issuer: item.issuer ?? '', date_obtained: item.date_obtained ?? '', expiration_date: item.expiration_date ?? '', certificate_file: item.certificate_file ?? '' }); setModal('form') }
   const openView = (item) => { setEditing(item); setModal('view') }
 
   const f = (k, v) => setForm(p => ({ ...p, [k]: v }))

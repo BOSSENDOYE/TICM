@@ -78,7 +78,7 @@ export default function Login() {
             <input
               type="email"
               id="email"
-              value={email}
+              value={email ?? ''}
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="admin@ticm.com"
@@ -90,7 +90,7 @@ export default function Login() {
             <input
               type="password"
               id="password"
-              value={password}
+              value={password ?? ''}
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Entrez votre mot de passe"

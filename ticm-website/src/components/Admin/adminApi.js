@@ -49,12 +49,13 @@ export const adminApi = {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: formData,
-    }).then(res => {
-      if (res.status === 204) return null
-      return res.json().catch(() => ({}))
-    }).then(data => {
-      if (!res.ok) throw new Error(data?.message || `Erreur ${res.status}`)
-      return data
+    }).then(response => {
+      const status = response.status
+      if (status === 204) return null
+      return response.json().catch(() => ({})).then(data => {
+        if (!response.ok) throw new Error(data?.message || `Erreur ${status}`)
+        return data
+      })
     })
   },
   putForm:    (url, formData) => {
@@ -66,12 +67,13 @@ export const adminApi = {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: formData,
-    }).then(res => {
-      if (res.status === 204) return null
-      return res.json().catch(() => ({}))
-    }).then(data => {
-      if (!res.ok) throw new Error(data?.message || `Erreur ${res.status}`)
-      return data
+    }).then(response => {
+      const status = response.status
+      if (status === 204) return null
+      return response.json().catch(() => ({})).then(data => {
+        if (!response.ok) throw new Error(data?.message || `Erreur ${status}`)
+        return data
+      })
     })
   },
 }

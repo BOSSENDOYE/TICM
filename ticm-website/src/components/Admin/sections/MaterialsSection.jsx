@@ -31,7 +31,7 @@ export default function MaterialsSection() {
   useEffect(load, [])
 
   const openNew  = () => { setEditing(null); setForm(EMPTY); setPreview(null); setModal('form') }
-  const openEdit = (item) => { setEditing(item); setForm({ ...item, imageFile: null }); setPreview(item.image); setModal('form') }
+  const openEdit = (item) => { setEditing(item); setForm({ ...item, imageFile: null, description: item.description ?? '', url: item.url ?? '' }); setPreview(item.image); setModal('form') }
 
   const f = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
